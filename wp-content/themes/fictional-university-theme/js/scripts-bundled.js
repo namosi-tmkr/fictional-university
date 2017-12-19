@@ -13673,21 +13673,39 @@ function () {
     value: function getResults() {
       var _this = this;
 
-      //when: asynchronously run JSON requests
-      //1st parameter of when is gonna map to 1st parameter of then and so on
-      _jquery.default.when(_jquery.default.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val()), _jquery.default.getJSON(universityData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.val())).then(function (posts, pages) {
-        var combinedResults = posts[0].concat(pages[0]); //combine multiple arrays
-
-        _this.resultsDiv.html("\n\t\t\t\t<h2 class=\"search-overlay__section-title\">General Information</h2>\n\t\t\t\t".concat(combinedResults.length ? '<ul class="link-list min-list">' : '<p>No general information present..</p>', "\n\t\t\t\t\t").concat(combinedResults.map(function (item) {
-          return "<li><a href=\"".concat(item.link, "\">").concat(item.title.rendered, "</a> ").concat(item.type == 'post' ? "by ".concat(item.author_name) : '', "</li>");
-        }).join(''), "\t\n\t\t\t\t").concat(combinedResults.length ? '</ul>' : '', "\n\t\t\t\t\n\t\t\t\t"));
+      _jquery.default.getJSON(universityData.root_url + '/wp-json/university/v1/search?term=' + this.searchField.val(), function (results) {
+        _this.resultsDiv.html("\n\t\t\t\t<div class=\"row\">\n\t\t\t\t\t<div class=\"one-third\">\n\t\t\t\t\t\t<h2 class=\"search-overlay__section-title\">General Information</h2>\n\t\t\t\t\t\t".concat(results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>No general information match that search. </p>', "\n\t\t\t\t\t\t\t").concat(results.generalInfo.map(function (item) {
+          return "<li><a href=\"".concat(item.permalink, "\">").concat(item.title, "</a> ").concat(item.postType == 'post' ? "by ".concat(item.author_name) : '', "</li>");
+        }).join(''), "\t\n\t\t\t\t\t\t").concat(results.generalInfo.length ? '</ul>' : '', "\n\t\t\t\t\t</div>\n\n\t\t\t\t\t<div class=\"one-third\">\n\t\t\t\t\t\t<h2 class=\"search-overlay__section-title\">Programs</h2>\n\t\t\t\t\t\t").concat(results.programs.length ? '<ul class="link-list min-list">' : "<p>No programs match that search. <a href=\"".concat(universityData.root_url, "/programs\">View all programs</a></p>"), "\n\t\t\t\t\t\t\t").concat(results.programs.map(function (item) {
+          return "<li><a href=\"".concat(item.permalink, "\">").concat(item.title, "</a> </li>");
+        }).join(''), "\t\n\t\t\t\t\t\t").concat(results.programs.length ? '</ul>' : '', "\n\n\n\t\t\t\t\t\t<h2 class=\"search-overlay__section-title\">Professors</h2>\n\t\t\t\t\t</div>\n\n\t\t\t\t\t<div class=\"one-third\">\n\t\t\t\t\t\t<h2 class=\"search-overlay__section-title\">Campuses</h2>\n\t\t\t\t\t\t").concat(results.campuses.length ? '<ul class="link-list min-list">' : "<p>No campuses match that search. <a href=\"".concat(universityData.root_url, "/campuses\">View all campuses</a> </p>"), "\n\t\t\t\t\t\t\t").concat(results.campuses.map(function (item) {
+          return "<li><a href=\"".concat(item.permalink, "\">").concat(item.title, "</a> </li>");
+        }).join(''), "\t\n\t\t\t\t\t\t").concat(results.campuses.length ? '</ul>' : '', "\n\n\n\t\t\t\t\t\t<h2 class=\"search-overlay__section-title\">Events</h2>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t"));
 
         _this.isSpinnerVisible = false;
-      }, function () {
-        _this.resultsDiv.html('<p>Unexpected error please try again</p>'); //to view if error arises while running script
-
       });
-      /* old code before when().then()  i.e synchronous method
+      /* old code used before custom rest api was made
+      //when: asynchronously run JSON requests
+      //1st parameter of when is gonna map to 1st parameter of then and so on
+      $.when(
+      	$.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val()),
+      	$.getJSON(universityData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.val())
+      	).then((posts, pages) => {
+      	var combinedResults = posts[0].concat(pages[0]); //combine multiple arrays
+      		this.resultsDiv.html(`
+      		<h2 class="search-overlay__section-title">General Information</h2>
+      		${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No general information present..</p>'}
+      			${combinedResults.map(item => `<li><a href="${item.link}">${item.title.rendered}</a> ${item.type == 'post' ? `by ${item.author_name}` : ''}</li>`).join('')}	
+      		${combinedResults.length ? '</ul>' : ''}
+      		
+      		`);
+      	this.isSpinnerVisible = false;
+      }, () => {
+      	this.resultsDiv.html('<p>Unexpected error please try again</p>'); //to view if error arises while running script
+      }); 
+      */
+
+      /* oldest code before when().then()  i.e synchronous method
       $.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val(), posts => { //function(posts) is replaced by posts=>(ES6 arrow function) in order to bind(this)			
       	//template literal use here
       	$.getJSON(universityData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.val(), pages => {
