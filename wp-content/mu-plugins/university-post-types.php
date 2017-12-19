@@ -40,6 +40,7 @@ function university_post_types()
 	//Professor Post Type
 	register_post_type('professor', [
 		'public' 		=> TRUE,
+		'show_in_rest'  => TRUE,
 		'supports'		=> ['title', 'editor', 'thumbnail'],
 		'labels' => [
 				'name' 			=> 'Professors',

@@ -1,5 +1,8 @@
 <?php
 
+require get_theme_file_path('/includes/search-route.php');
+
+
 function university_files()
 {	
 	wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=AIzaSyDT6Byg6DgZt7F4MWD68iswWpIYvMrJQ1Y', NULL, microtime(), TRUE);
