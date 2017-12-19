@@ -13614,6 +13614,8 @@ function () {
   function Search() {
     _classCallCheck(this, Search);
 
+    this.addSearchHTML(); //must be at beginning
+
     this.openButton = (0, _jquery.default)(".js-search-trigger"); //search button
 
     this.closeButton = (0, _jquery.default)(".search-overlay__close"); //cross button
@@ -13656,7 +13658,7 @@ function () {
             this.isSpinnerVisible = true;
           }
 
-          this.typingTimer = setTimeout(this.getResults.bind(this), 2000);
+          this.typingTimer = setTimeout(this.getResults.bind(this), 750);
         } else {
           this.resultsDiv.html('');
           this.isSpinnerVisible = false;
@@ -13673,12 +13675,14 @@ function () {
 
       // this.resultsDiv.html("Imagine real search results here");
       // this.isSpinnerVisible = false;
-      _jquery.default.getJSON('http://localhost:3000/wp-json/wp/v2/posts?search=' + this.searchField.val(), function (posts) {
+      _jquery.default.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val(), function (posts) {
         //function(posts) is replaced by posts=>(ES6 arrow function) in order to bind(this)			
         //template literal use here
-        _this.resultsDiv.html("\n\t\t\t\t<h2 class=\"search-overlay__section-title\">General Information</h2>\n\t\t\t\t<ul class=\"link-list min-list\">\n\t\t\t\t\t".concat(posts.map(function (item) {
+        _this.resultsDiv.html("\n\t\t\t\t<h2 class=\"search-overlay__section-title\">General Information</h2>\n\t\t\t\t".concat(posts.length ? '<ul class="link-list min-list">' : '<p>No general information present..</p>', "\n\t\t\t\t\t").concat(posts.map(function (item) {
           return "<li><a href=\"\">".concat(item.title.rendered, "</a></li>");
-        }).join(''), "\n\t\t\t\t</ul>\n\t\t\t\t"));
+        }).join(''), "\t\n\t\t\t\t").concat(posts.length ? '</ul>' : '', "\n\t\t\t\t\n\t\t\t\t"));
+
+        _this.isSpinnerVisible = false;
       });
     } //to press s and esc to open and close the search overlay
 
@@ -13699,8 +13703,15 @@ function () {
   }, {
     key: "openOverlay",
     value: function openOverlay() {
+      var _this2 = this;
+
       this.searchOverlay.addClass("search-overlay--active");
       (0, _jquery.default)("body").addClass("body-no-scroll");
+      this.searchField.val('');
+      setTimeout(function () {
+        return _this2.searchField.focus();
+      }, 301); //to put cursor in textfield automatically
+
       this.isOverlayOpen = true;
       console.log("Our open method ran");
     }
@@ -13711,6 +13722,12 @@ function () {
       (0, _jquery.default)("body").removeClass("body-no-scroll");
       this.isOverlayOpen = false;
       console.log("close method ran");
+    } //search overlay 
+
+  }, {
+    key: "addSearchHTML",
+    value: function addSearchHTML() {
+      (0, _jquery.default)("body").append("\n\n\t\t\t<div class=\"search-overlay\">\n\t\t\t\t<div class=\"search-overlay__top\">\n\t\t\t\t\t<div class=\"container\">\n\t\t\t\t\t\t<i class=\"fa fa-search search-overlay__icon\" aria-hidden=\"true\"></i>\n\t\t\t\t\t\t<input type=\"text\" class=\"search-term\" placeholder=\"What are you looking for?\" id=\"search-term\">\n\t\t\t\t\t\t<i class=\"fa fa-window-close search-overlay__close\" aria-hidden=\"true\"></i>\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"container\">\n\t\t\t\t\t<div id=\"search-overlay__results\">\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t");
     }
   }]);
 
