@@ -13614,13 +13614,24 @@ function () {
   function Search() {
     _classCallCheck(this, Search);
 
-    this.openButton = (0, _jquery.default)(".js-search-trigger");
-    this.closeButton = (0, _jquery.default)(".search-overlay__close");
-    this.searchOverlay = (0, _jquery.default)(".search-overlay");
-    this.searchField = (0, _jquery.default)("#search-term");
+    this.openButton = (0, _jquery.default)(".js-search-trigger"); //search button
+
+    this.closeButton = (0, _jquery.default)(".search-overlay__close"); //cross button
+
+    this.searchOverlay = (0, _jquery.default)(".search-overlay"); //transparent overlay
+
+    this.searchField = (0, _jquery.default)("#search-term"); //text field
+
     this.events();
-    this.isOverlayOpen = false;
-    this.typingTimer;
+    this.isOverlayOpen = false; //check if the overlay is open or not
+
+    this.typingTimer; //to set timer when a button is pressed in search field
+
+    this.resultsDiv = (0, _jquery.default)("#search-overlay__results"); //the results container div
+
+    this.isSpinnerVisible = false; //check the spinner visibility
+
+    this.previousValue; //to check previous search string
   } //2. events
 
 
@@ -13630,23 +13641,52 @@ function () {
       this.openButton.on("click", this.openOverlay.bind(this));
       this.closeButton.on("click", this.closeOverlay.bind(this));
       (0, _jquery.default)(document).on("keydown", this.keyPressDispatcher.bind(this));
-      this.searchField.on("keydown", this.typingLogic.bind(this));
+      this.searchField.on("keyup", this.typingLogic.bind(this));
     } //3. methods (function/action....)
 
   }, {
     key: "typingLogic",
     value: function typingLogic() {
-      clearTimeout(this.typingTimer);
-      this.typingTimer = setTimeout(function () {
-        console.log("this is a timeout test");
-      }, 2000);
+      if (this.searchField.val() != this.previousValue) {
+        clearTimeout(this.typingTimer);
+
+        if (this.searchField.val()) {
+          if (!this.isSpinnerVisible) {
+            this.resultsDiv.html('<div class="spinner-loader"></div>');
+            this.isSpinnerVisible = true;
+          }
+
+          this.typingTimer = setTimeout(this.getResults.bind(this), 2000);
+        } else {
+          this.resultsDiv.html('');
+          this.isSpinnerVisible = false;
+        }
+      }
+
+      this.previousValue = this.searchField.val();
+    } //to get results called by timeout method
+
+  }, {
+    key: "getResults",
+    value: function getResults() {
+      var _this = this;
+
+      // this.resultsDiv.html("Imagine real search results here");
+      // this.isSpinnerVisible = false;
+      _jquery.default.getJSON('http://localhost:3000/wp-json/wp/v2/posts?search=' + this.searchField.val(), function (posts) {
+        //function(posts) is replaced by posts=>(ES6 arrow function) in order to bind(this)			
+        //template literal use here
+        _this.resultsDiv.html("\n\t\t\t\t<h2 class=\"search-overlay__section-title\">General Information</h2>\n\t\t\t\t<ul class=\"link-list min-list\">\n\t\t\t\t\t".concat(posts.map(function (item) {
+          return "<li><a href=\"\">".concat(item.title.rendered, "</a></li>");
+        }).join(''), "\n\t\t\t\t</ul>\n\t\t\t\t"));
+      });
     } //to press s and esc to open and close the search overlay
 
   }, {
     key: "keyPressDispatcher",
     value: function keyPressDispatcher(e) {
       // console.log(e.keyCode);
-      if (e.keyCode == 83 && !this.isOverlayOpen) {
+      if (e.keyCode == 83 && !this.isOverlayOpen && !(0, _jquery.default)("input, textarea").is(':focus')) {
         //s key
         this.openOverlay();
       }
