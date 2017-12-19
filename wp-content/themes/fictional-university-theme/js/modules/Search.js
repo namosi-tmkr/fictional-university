@@ -58,14 +58,17 @@ class Search {
 
 		$.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val(), posts => { //function(posts) is replaced by posts=>(ES6 arrow function) in order to bind(this)			
 			//template literal use here
-			this.resultsDiv.html(`
+			$.getJSON(universityData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.val(), pages => {
+				var combinedResults = posts.concat(pages); //combine multiple arrays
+				this.resultsDiv.html(`
 				<h2 class="search-overlay__section-title">General Information</h2>
-				${posts.length ? '<ul class="link-list min-list">' : '<p>No general information present..</p>'}
-					${posts.map(item => `<li><a href="">${item.title.rendered}</a></li>`).join('')}	
-				${posts.length ? '</ul>' : ''}
+				${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No general information present..</p>'}
+					${combinedResults.map(item => `<li><a href="">${item.title.rendered}</a></li>`).join('')}	
+				${combinedResults.length ? '</ul>' : ''}
 				
 				`);
 			this.isSpinnerVisible = false;
+			});
 		});
 	}
 
