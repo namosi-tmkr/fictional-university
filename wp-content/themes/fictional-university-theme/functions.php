@@ -17,6 +17,17 @@ function university_files()
 add_action('wp_enqueue_scripts', 'university_files');
 
 
+//customize the wordpress rest API
+function university_custom_rest() 
+{
+	register_rest_field('post', 'author_name', [
+		'get_callback' => function() {
+			return get_the_author();
+		}
+	]);
+}
+
+add_action('rest_api_init', 'university_custom_rest');
  
 //adding features to dashboard
 function university_features()
