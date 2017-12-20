@@ -22,7 +22,12 @@ pageBanner([
       </div>
 
       <div class="generic-content">
-        <?php the_excerpt(); ?>
+        <?php if(has_excerpt()) {
+         echo get_the_excerpt();
+        } else {
+        echo wp_trim_words(get_the_content(), 18);
+        }
+      ?>
         <p><a class="btn btn--blue" href="<?php the_permalink(); ?>">Continue Reading &raquo;</a></p>
       </div>
 
