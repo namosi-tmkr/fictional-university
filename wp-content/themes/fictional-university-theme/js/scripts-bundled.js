@@ -13811,13 +13811,28 @@ function () {
   _createClass(MyNotes, [{
     key: "events",
     value: function events() {
-      (0, _jquery.default)(".delete-note").on("click", this.deleteNote());
+      (0, _jquery.default)(".delete-note").on("click", this.deleteNote);
     } //methods will go here
 
   }, {
     key: "deleteNote",
     value: function deleteNote() {
-      alert('clicked delete');
+      _jquery.default.ajax({
+        //Nonce required for authorization
+        beforeSend: function beforeSend(xhr) {
+          xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+        },
+        url: universityData.root_url + '/wp-json/wp/v2/note/92',
+        type: 'DELETE',
+        success: function success(response) {
+          console.log("congrats");
+          console.log(response);
+        },
+        error: function error(response) {
+          console.log("Sorry");
+          console.log(response);
+        }
+      });
     }
   }]);
 
