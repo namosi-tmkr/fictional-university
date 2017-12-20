@@ -165,6 +165,7 @@ class Search {
 		setTimeout(() => this.searchField.focus() , 301); //to put cursor in textfield automatically
 		this.isOverlayOpen = true;
 		console.log("Our open method ran");
+		return false; //manages default a tag
 	}
 
 
@@ -172,6 +173,7 @@ class Search {
 		this.searchOverlay.removeClass("search-overlay--active");
 		$("body").removeClass("body-no-scroll");
 		this.isOverlayOpen = false;
+		this.resultsDiv.html(''); 
 		console.log("close method ran");
 	}
 

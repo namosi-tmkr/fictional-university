@@ -13748,6 +13748,7 @@ function () {
 
       this.isOverlayOpen = true;
       console.log("Our open method ran");
+      return false; //manages default a tag
     }
   }, {
     key: "closeOverlay",
@@ -13755,6 +13756,7 @@ function () {
       this.searchOverlay.removeClass("search-overlay--active");
       (0, _jquery.default)("body").removeClass("body-no-scroll");
       this.isOverlayOpen = false;
+      this.resultsDiv.html('');
       console.log("close method ran");
     } //search overlay 
 
