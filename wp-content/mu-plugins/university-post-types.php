@@ -25,7 +25,7 @@ function university_post_types()
 		'public' 		=> TRUE,
 		'has_archive' 	=> TRUE,
 		'rewrite' 		=> ['slug' => 'programs'],
-		'supports'		=> ['title', 'editor', ],
+		'supports'		=> ['title', ], //removed editor to remove dublicity
 		'labels' => [
 				'name' 			=> 'Programs',
 				'add_new_item' 	=> 'Add New Program',

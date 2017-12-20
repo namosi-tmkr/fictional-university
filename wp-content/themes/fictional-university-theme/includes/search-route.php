@@ -48,6 +48,7 @@ function universitySearchResults($data)
 
 		if(get_post_type() == 'program') {
 			array_push($results['programs'], [
+			'id' 		=> get_the_ID(),
 			'title' 	=> get_the_title(),
 			'permalink'	=> get_the_permalink(),
 		]);
@@ -81,31 +82,38 @@ function universitySearchResults($data)
 
 	}
 
-	$programRelationshipQuery = new WP_Query([
-		'post_type'  => 'professor',
-		'meta_query' => [
-				[
-					'key' 		=> 'related_programs',
-					'compare' 	=> 'LIKE',
-					'value' 	=> '"62"',
-				]
-		], 
-	]);
+	if($results['programs']) {
+		$programsMetaQuery = ['relation' => 'OR',]; //to make programRelationQuery dynamic for mutiple programs with similar name like math, opt.math
 
-	while($programRelationshipQuery->have_posts()) {
-		$programRelationshipQuery->the_post();
-
-		if(get_post_type() == 'professor') {
-			array_push($results['professors'], [
-			'title' 	=> get_the_title(),
-			'permalink'	=> get_the_permalink(),
-			'image'		=> get_the_post_thumbnail_url(0, 'professorLandscape'),
+		foreach($results['programs'] as $item) {
+			array_push($programsMetaQuery, [
+				'key' 		=> 'related_programs',
+				'compare' 	=> 'LIKE',
+				'value' 	=> '"' . $item['id'] . '"', //compare with id of programs obtained from programs array above
 		]);
 		}
 
-	}
+		$programRelationshipQuery = new WP_Query([
+			'post_type'  => 'professor',
+			'meta_query' => $programsMetaQuery, 
+		]);
 
-	$results['professors'] = array_values(array_unique($results['professors'], SORT_REGULAR));
+		while($programRelationshipQuery->have_posts()) {
+			$programRelationshipQuery->the_post();
+
+			if(get_post_type() == 'professor') {
+				array_push($results['professors'], [
+					'title' 	=> get_the_title(),
+					'permalink'	=> get_the_permalink(),
+					'image'		=> get_the_post_thumbnail_url(0, 'professorLandscape'),
+				]);
+			}
+
+		}
+
+		$results['professors'] = array_values(array_unique($results['professors'], SORT_REGULAR));
+	}
+	
 
 	return $results;
 }
