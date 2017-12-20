@@ -8,6 +8,8 @@ function university_post_types()
 	register_post_type('event', [
 		'public' 		=> TRUE,
 		'has_archive' 	=> TRUE,
+		'capability_type' => 'event',//by default its permissions is that of a blog post
+		'map_meta_cap'  => true,
 		'rewrite' 		=> ['slug' => 'events'],
 		'supports'		=> ['title', 'editor', 'excerpt', ],
 		'labels' => [
@@ -57,6 +59,8 @@ function university_post_types()
 	register_post_type('campus', [
 		'public' 		=> TRUE,
 		'has_archive' 	=> TRUE,
+		'capability_type' => 'campus',
+		'map_meta_cap'	=> true,
 		'rewrite' 		=> ['slug' => 'campuses'],
 		'supports'		=> ['title', 'editor', 'excerpt', ],
 		'labels' => [
