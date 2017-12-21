@@ -60,7 +60,7 @@ function university_post_types()
 		'public' 		=> TRUE,
 		'has_archive' 	=> TRUE,
 		'capability_type' => 'campus',
-		'map_meta_cap'	=> true,
+		'map_meta_cap'	=> TRUE,
 		'rewrite' 		=> ['slug' => 'campuses'],
 		'supports'		=> ['title', 'editor', 'excerpt', ],
 		'labels' => [
@@ -76,6 +76,8 @@ function university_post_types()
 
 	//Note post type
 	register_post_type('note', [
+		'capability_type' => 'note',
+		'map_meta_cap'	=> TRUE,
 		'public' 		=> FALSE,
 		'show_ui'		=> TRUE, //shows in admin dashboard
 		'show_in_rest'  => TRUE,
