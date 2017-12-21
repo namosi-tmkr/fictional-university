@@ -13811,9 +13811,9 @@ function () {
   _createClass(MyNotes, [{
     key: "events",
     value: function events() {
-      (0, _jquery.default)(".delete-note").on("click", this.deleteNote);
-      (0, _jquery.default)(".edit-note").on("click", this.editNote.bind(this));
-      (0, _jquery.default)(".update-note").on("click", this.updateNote.bind(this));
+      (0, _jquery.default)("#my-notes").on("click", ".delete-note", this.deleteNote);
+      (0, _jquery.default)("#my-notes").on("click", ".edit-note", this.editNote.bind(this));
+      (0, _jquery.default)("#my-notes").on("click", ".update-note", this.updateNote.bind(this));
       (0, _jquery.default)(".submit-note").on("click", this.createNote.bind(this));
     } //methods will go here
     //makes note editable
@@ -13925,7 +13925,7 @@ function () {
         data: ourNewPost,
         success: function success(response) {
           (0, _jquery.default)(".new-note-title, .new-note-body").val('');
-          (0, _jquery.default)('<li>Imagine real data here</li>').prependTo("#my-notes").hide().slideDown();
+          (0, _jquery.default)("\n\t\t\t\t<li data-id=\"".concat(response.id, "\">\n    \t\t\t\t<input readonly class=\"note-title-field\" value=\"").concat(response.title.raw, "\"> \n    \t\t\t\t<span class=\"edit-note\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>Edit</span>\n    \t\t\t\t<span class=\"delete-note\"><i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>Delete</span>\n    \t\t\t\t<textarea readonly class=\"note-body-field\">").concat(response.content.raw, "</textarea>\n                    <span class=\"update-note btn btn--blue btn--small\"><i class=\"fa fa-arrow-right\" aria-hidden=\"true\"></i>Save</span>\n    \t\t\t</li>\n\t\t\t\t\t")).prependTo("#my-notes").hide().slideDown();
           console.log("congrats");
           console.log(response);
         },
