@@ -13996,7 +13996,8 @@ function () {
     value: function ourClickDispatcher(e) {
       var currentLikeBox = (0, _jquery.default)(e.target.closest(".like-box"));
 
-      if (currentLikeBox.data('exists') == 'yes') {
+      if (currentLikeBox.attr('data-exists') == 'yes') {
+        //attr() pulls fresh jscript data rather than data() which loads only once
         this.deleteLike(currentLikeBox);
       } else {
         this.createLike(currentLikeBox);
@@ -14016,6 +14017,12 @@ function () {
           'professorId': currentLikeBox.data('professor')
         },
         success: function success(response) {
+          currentLikeBox.attr('data-exists', 'yes');
+          var likeCount = parseInt(currentLikeBox.find(".like-count").html(), 10);
+          likeCount++;
+          currentLikeBox.find(".like-count").html(likeCount);
+          currentLikeBox.attr("data-like", response); //it updates the data-like attribute without refreshing the page
+
           console.log(response);
         },
         error: function error(response) {
@@ -14027,9 +14034,22 @@ function () {
     key: "deleteLike",
     value: function deleteLike(currentLikeBox) {
       _jquery.default.ajax({
+        //Nonce required for authorization
+        beforeSend: function beforeSend(xhr) {
+          xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+        },
         url: universityData.root_url + '/wp-json/university/v1/manageLike',
+        data: {
+          'like': currentLikeBox.data('like')
+        },
+        //id of the like post that is to be deleted
         type: 'DELETE',
         success: function success(response) {
+          currentLikeBox.attr('data-exists', 'no');
+          var likeCount = parseInt(currentLikeBox.find(".like-count").html(), 10);
+          likeCount--;
+          currentLikeBox.find(".like-count").html(likeCount);
+          currentLikeBox.attr("data-like", '');
           console.log(response);
         },
         error: function error(response) {
