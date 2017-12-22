@@ -53,7 +53,23 @@
     <?php } ?>
 
     <div class="generic-content">
-      <?php the_content(); ?>
+      <?php the_content(); 
+
+      $skyColorValue = sanitize_text_field(get_query_var('skyColor'));
+      $grassColorValue = sanitize_text_field(get_query_var('grassColor'));
+
+      //custum query vars
+        if($skyColorValue == 'blue' && $grassColorValue == 'green') {
+          echo '<p>The sky is blue. Yeah!!!!! </p>';
+        }
+
+      ?>
+      <form method="get">
+        <input name="skyColor" placeholder="Sky Color">
+        <input name="grassColor" placeholder="Grass Color">
+        <button>Submit</button>
+      </form>
+
     </div>
 
   </div>

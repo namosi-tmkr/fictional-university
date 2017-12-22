@@ -223,3 +223,16 @@ function makeNotePrivate($data, $postarr)
 	
 	return $data;
 }
+
+
+
+//add new query variables
+add_filter('query_vars', 'universityQueryVars');
+
+function universityQueryVars($vars)
+{
+	$vars[] = 'skyColor';
+	$vars[] = 'grassColor';
+
+	return $vars;
+}
